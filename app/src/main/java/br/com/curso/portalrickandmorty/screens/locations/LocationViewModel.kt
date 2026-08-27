@@ -2,7 +2,7 @@ package br.com.curso.portalrickandmorty.screens.locations
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.curso.portalrickandmorty.data.dao.LocationDao
+import br.com.curso.portalrickandmorty.data.local.dao.LocationDao
 import br.com.curso.portalrickandmorty.domain.model.Location
 import br.com.curso.portalrickandmorty.repository.LocationRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,7 +44,9 @@ class LocationViewModel(private val dao: LocationDao) : ViewModel() {
             try {
                 repository.syncLocations()
             } catch (exception: Exception) {
-                _error.value = exception.message ?: "Erro ao carregar locais."
+                if (locations.value.isEmpty()) {
+                    _error.value = exception.message ?: "Erro ao carregar locais."
+                }
             } finally {
                 _isLoading.value = false
             }

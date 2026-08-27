@@ -2,7 +2,7 @@ package br.com.curso.portalrickandmorty.screens.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.curso.portalrickandmorty.data.dao.UserDao
+import br.com.curso.portalrickandmorty.data.local.dao.UserDao
 import br.com.curso.portalrickandmorty.repository.UserRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -42,12 +42,17 @@ class LoginViewModel(private val dao: UserDao) : ViewModel() {
             return
         }
 
+        if (_email.value != "admin" || _password.value != "admin123") {
+            _error.value = "Credenciais inválidas"
+            return
+        }
+
         viewModelScope.launch {
             _isLoading.value = true
             _error.value = null
             try {
-                // Mock login logic
-                repository.login(name = "User Rick", email = _email.value)
+                // Mock login logic with requested credentials
+                repository.login(name = "Administrador", email = _email.value)
                 _loginSuccess.value = true
             } catch (e: Exception) {
                 _error.value = e.message ?: "Erro ao fazer login"

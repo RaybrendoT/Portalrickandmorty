@@ -1,7 +1,7 @@
 package br.com.curso.portalrickandmorty.repository
 
-import br.com.curso.portalrickandmorty.data.dao.CharacterDao
-import br.com.curso.portalrickandmorty.data.entity.CharacterEntity
+import br.com.curso.portalrickandmorty.data.local.dao.CharacterDao
+import br.com.curso.portalrickandmorty.data.local.entity.CharacterEntity
 import br.com.curso.portalrickandmorty.domain.model.Character
 import br.com.curso.portalrickandmorty.remote.RetrofitInstance
 import kotlinx.coroutines.flow.Flow
@@ -39,13 +39,11 @@ class CharacterRepository(private val dao: CharacterDao) {
             }
             dao.insertCharacters(entities)
         } catch (e: Exception) {
-            // Log error or handle it
             throw e
         }
     }
 
     suspend fun getCharacterById(id: Int): Character? {
-        // Try local first
         val local = dao.getCharacterById(id)
         if (local != null) {
             return Character(
@@ -57,7 +55,6 @@ class CharacterRepository(private val dao: CharacterDao) {
             )
         }
 
-        // Then remote
         return try {
             val dto = api.getCharacterById(id)
             Character(

@@ -2,7 +2,6 @@ package br.com.curso.portalrickandmorty.screens.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
-import androidx.navigation.NavOptionsBuilder
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -25,6 +24,10 @@ import br.com.curso.portalrickandmorty.screens.portal.PortalViewModel
 import br.com.curso.portalrickandmorty.location.LocationManager
 import androidx.compose.ui.platform.LocalContext
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+
 @Composable
 fun AppNavigation(database: AppDatabase) {
     val navController = rememberNavController()
@@ -35,10 +38,16 @@ fun AppNavigation(database: AppDatabase) {
         navController = navController,
         startDestination = Routes.Login.route
     ) {
-        // ... (existing)
         composable(Routes.Login.route) {
+            val loginViewModel: LoginViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return LoginViewModel(database.userDao()) as T
+                    }
+                }
+            )
             LoginScreen(
-                viewModel = LoginViewModel(database.userDao()),
+                viewModel = loginViewModel,
                 onLoginSuccess = {
                     navController.navigate(Routes.Characters.route) {
                         popUpTo(Routes.Login.route) { inclusive = true }
@@ -48,8 +57,15 @@ fun AppNavigation(database: AppDatabase) {
         }
 
         composable(Routes.Characters.route) {
+            val characterViewModel: CharacterViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return CharacterViewModel(database.characterDao()) as T
+                    }
+                }
+            )
             CharactersScreen(
-                viewModel = CharacterViewModel(database.characterDao()),
+                viewModel = characterViewModel,
                 onCharacterClick = { id ->
                     navController.navigate(Routes.CharacterDetail.createRoute(id))
                 },
@@ -64,16 +80,30 @@ fun AppNavigation(database: AppDatabase) {
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id") ?: 0
+            val characterViewModel: CharacterViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return CharacterViewModel(database.characterDao()) as T
+                    }
+                }
+            )
             CharacterDetailScreen(
                 id = id,
-                viewModel = CharacterViewModel(database.characterDao()),
+                viewModel = characterViewModel,
                 onBackClick = { navController.popBackStack() }
             )
         }
 
         composable(Routes.Locations.route) {
+            val locationViewModel: LocationViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return LocationViewModel(database.locationDao()) as T
+                    }
+                }
+            )
             LocationsScreen(
-                viewModel = LocationViewModel(database.locationDao())
+                viewModel = locationViewModel
             )
         }
 
@@ -82,16 +112,30 @@ fun AppNavigation(database: AppDatabase) {
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id") ?: 0
+            val locationViewModel: LocationViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return LocationViewModel(database.locationDao()) as T
+                    }
+                }
+            )
             LocationDetailScreen(
                 id = id,
-                viewModel = LocationViewModel(database.locationDao()),
+                viewModel = locationViewModel,
                 onBackClick = { navController.popBackStack() }
             )
         }
 
         composable(Routes.Episodes.route) {
+            val episodeViewModel: EpisodeViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return EpisodeViewModel(database.episodeDao()) as T
+                    }
+                }
+            )
             EpisodesScreen(
-                viewModel = EpisodeViewModel(database.episodeDao())
+                viewModel = episodeViewModel
             )
         }
 
@@ -100,16 +144,30 @@ fun AppNavigation(database: AppDatabase) {
             arguments = listOf(navArgument("id") { type = NavType.IntType })
         ) { backStackEntry ->
             val id = backStackEntry.arguments?.getInt("id") ?: 0
+            val episodeViewModel: EpisodeViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return EpisodeViewModel(database.episodeDao()) as T
+                    }
+                }
+            )
             EpisodeDetailScreen(
                 id = id,
-                viewModel = EpisodeViewModel(database.episodeDao()),
+                viewModel = episodeViewModel,
                 onBackClick = { navController.popBackStack() }
             )
         }
 
         composable(Routes.MyPortal.route) {
+            val portalViewModel: PortalViewModel = viewModel(
+                factory = object : ViewModelProvider.Factory {
+                    override fun <T : ViewModel> create(modelClass: Class<T>): T {
+                        return PortalViewModel(locationManager) as T
+                    }
+                }
+            )
             MyPortalScreen(
-                viewModel = PortalViewModel(locationManager)
+                viewModel = portalViewModel
             )
         }
     }

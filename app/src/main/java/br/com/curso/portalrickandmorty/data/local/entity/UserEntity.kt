@@ -1,4 +1,4 @@
-package br.com.curso.portalrickandmorty.data.entity
+package br.com.curso.portalrickandmorty.data.local.entity
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

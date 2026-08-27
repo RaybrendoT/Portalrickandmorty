@@ -104,7 +104,7 @@ fun MyPortalScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = if (isTracking) "Portal Ativo" else "Portal Inativo",
+            text = if (isTracking) "Rastreamento Ativo" else "Rastreamento Inativo",
             fontSize = 20.sp,
             color = if (isTracking) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.error
         )
@@ -123,10 +123,22 @@ fun MyPortalScreen(
                 color = MaterialTheme.colorScheme.outline
             )
         } else {
-            Text(text = "Buscando coordenadas...", fontSize = 18.sp)
+            Text(
+                text = if (isTracking) "Buscando coordenadas..." else "Aguardando início...",
+                fontSize = 18.sp
+            )
         }
 
         Spacer(modifier = Modifier.height(48.dp))
+
+        Button(
+            onClick = { viewModel.startTracking() },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text("Atualizar Localização")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
@@ -137,7 +149,8 @@ fun MyPortalScreen(
                     context.startService(intent)
                 }
             },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
         ) {
             Text("Iniciar Monitoramento (Service)")
         }

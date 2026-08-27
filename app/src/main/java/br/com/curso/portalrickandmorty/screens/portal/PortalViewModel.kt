@@ -10,6 +10,8 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
+import android.util.Log
+
 class PortalViewModel(private val locationManager: LocationManager) : ViewModel() {
 
     private val _location = MutableStateFlow<Location?>(null)
@@ -19,12 +21,22 @@ class PortalViewModel(private val locationManager: LocationManager) : ViewModel(
     val isTracking: StateFlow<Boolean> = _isTracking.asStateFlow()
 
     fun startTracking() {
-        if (_isTracking.value) return
+        if (_isTracking.value) {
+            Log.d("PortalViewModel", "Already tracking")
+            return
+        }
         
+        Log.d("PortalViewModel", "Starting tracking job")
         viewModelScope.launch {
             _isTracking.value = true
-            locationManager.getLocationUpdates().collectLatest {
-                _location.value = it
+            try {
+                locationManager.getLocationUpdates().collectLatest {
+                    Log.d("PortalViewModel", "Received location in ViewModel: $it")
+                    _location.value = it
+                }
+            } catch (e: Exception) {
+                Log.e("PortalViewModel", "Error in location flow", e)
+                _isTracking.value = false
             }
         }
     }

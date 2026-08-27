@@ -1,7 +1,7 @@
 package br.com.curso.portalrickandmorty.repository
 
-import br.com.curso.portalrickandmorty.data.dao.UserDao
-import br.com.curso.portalrickandmorty.data.entity.UserEntity
+import br.com.curso.portalrickandmorty.data.local.dao.UserDao
+import br.com.curso.portalrickandmorty.data.local.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 
 class UserRepository(private val dao: UserDao) {
@@ -10,7 +10,7 @@ class UserRepository(private val dao: UserDao) {
 
     suspend fun login(name: String, email: String) {
         val user = UserEntity(
-            id = email, // Using email as ID for simplicity
+            id = email, 
             name = name,
             email = email
         )

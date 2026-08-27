@@ -1,10 +1,10 @@
-package br.com.curso.portalrickandmorty.data.dao
+package br.com.curso.portalrickandmorty.data.local.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
-import br.com.curso.portalrickandmorty.data.entity.UserEntity
+import br.com.curso.portalrickandmorty.data.local.entity.UserEntity
 import kotlinx.coroutines.flow.Flow
 
 @Dao

@@ -4,14 +4,14 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
-import br.com.curso.portalrickandmorty.data.dao.CharacterDao
-import br.com.curso.portalrickandmorty.data.dao.EpisodeDao
-import br.com.curso.portalrickandmorty.data.dao.LocationDao
-import br.com.curso.portalrickandmorty.data.dao.UserDao
-import br.com.curso.portalrickandmorty.data.entity.CharacterEntity
-import br.com.curso.portalrickandmorty.data.entity.EpisodeEntity
-import br.com.curso.portalrickandmorty.data.entity.LocationEntity
-import br.com.curso.portalrickandmorty.data.entity.UserEntity
+import br.com.curso.portalrickandmorty.data.local.dao.CharacterDao
+import br.com.curso.portalrickandmorty.data.local.dao.EpisodeDao
+import br.com.curso.portalrickandmorty.data.local.dao.LocationDao
+import br.com.curso.portalrickandmorty.data.local.dao.UserDao
+import br.com.curso.portalrickandmorty.data.local.entity.CharacterEntity
+import br.com.curso.portalrickandmorty.data.local.entity.EpisodeEntity
+import br.com.curso.portalrickandmorty.data.local.entity.LocationEntity
+import br.com.curso.portalrickandmorty.data.local.entity.UserEntity
 
 @Database(
     entities = [

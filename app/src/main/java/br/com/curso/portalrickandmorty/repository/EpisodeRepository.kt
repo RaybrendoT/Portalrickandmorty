@@ -1,7 +1,7 @@
 package br.com.curso.portalrickandmorty.repository
 
-import br.com.curso.portalrickandmorty.data.dao.EpisodeDao
-import br.com.curso.portalrickandmorty.data.entity.EpisodeEntity
+import br.com.curso.portalrickandmorty.data.local.dao.EpisodeDao
+import br.com.curso.portalrickandmorty.data.local.entity.EpisodeEntity
 import br.com.curso.portalrickandmorty.domain.model.Episode
 import br.com.curso.portalrickandmorty.remote.RetrofitInstance
 import kotlinx.coroutines.flow.Flow

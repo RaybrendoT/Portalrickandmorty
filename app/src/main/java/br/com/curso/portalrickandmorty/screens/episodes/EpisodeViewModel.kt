@@ -2,7 +2,7 @@ package br.com.curso.portalrickandmorty.screens.episodes
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.curso.portalrickandmorty.data.dao.EpisodeDao
+import br.com.curso.portalrickandmorty.data.local.dao.EpisodeDao
 import br.com.curso.portalrickandmorty.domain.model.Episode
 import br.com.curso.portalrickandmorty.repository.EpisodeRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -44,7 +44,9 @@ class EpisodeViewModel(private val dao: EpisodeDao) : ViewModel() {
             try {
                 repository.syncEpisodes()
             } catch (exception: Exception) {
-                _error.value = exception.message ?: "Erro ao carregar episódios."
+                if (episodes.value.isEmpty()) {
+                    _error.value = exception.message ?: "Erro ao carregar episódios."
+                }
             } finally {
                 _isLoading.value = false
             }

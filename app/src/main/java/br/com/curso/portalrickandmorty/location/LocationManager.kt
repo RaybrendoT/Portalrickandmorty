@@ -14,6 +14,8 @@ import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 
+import android.util.Log
+
 class LocationManager(private val context: Context) {
 
     private val client: FusedLocationProviderClient by lazy {
@@ -22,12 +24,14 @@ class LocationManager(private val context: Context) {
 
     @SuppressLint("MissingPermission")
     fun getLocationUpdates(): Flow<Location> = callbackFlow {
+        Log.d("LocationManager", "Starting location updates")
         val locationRequest = LocationRequest.Builder(Priority.PRIORITY_HIGH_ACCURACY, 5000L)
             .setMinUpdateIntervalMillis(2000L)
             .build()
 
         val locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult) {
+                Log.d("LocationManager", "New location result: ${result.lastLocation}")
                 result.lastLocation?.let { trySend(it) }
             }
         }
@@ -36,9 +40,13 @@ class LocationManager(private val context: Context) {
             locationRequest,
             locationCallback,
             Looper.getMainLooper()
-        )
+        ).addOnFailureListener { e ->
+            Log.e("LocationManager", "Failed to start location updates", e)
+            close(e)
+        }
 
         awaitClose {
+            Log.d("LocationManager", "Removing location updates")
             client.removeLocationUpdates(locationCallback)
         }
     }

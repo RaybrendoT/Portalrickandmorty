@@ -2,7 +2,7 @@ package br.com.curso.portalrickandmorty.screens.characters
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import br.com.curso.portalrickandmorty.data.dao.CharacterDao
+import br.com.curso.portalrickandmorty.data.local.dao.CharacterDao
 import br.com.curso.portalrickandmorty.domain.model.Character
 import br.com.curso.portalrickandmorty.repository.CharacterRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -53,7 +53,10 @@ class CharacterViewModel(private val dao: CharacterDao) : ViewModel() {
             try {
                 repository.syncCharacters()
             } catch (exception: Exception) {
-                _error.value = exception.message ?: "Erro ao carregar personagens."
+                // If we have characters in cache, don't show error to the user
+                if (characters.value.isEmpty()) {
+                    _error.value = exception.message ?: "Erro ao carregar personagens."
+                }
             } finally {
                 _isLoading.value = false
             }
@@ -65,7 +68,12 @@ class CharacterViewModel(private val dao: CharacterDao) : ViewModel() {
             _isLoading.value = true
             _error.value = null
             try {
-                _character.value = repository.getCharacterById(id)
+                val result = repository.getCharacterById(id)
+                if (result != null) {
+                    _character.value = result
+                } else {
+                    _error.value = "Personagem não encontrado."
+                }
             } catch (exception: Exception) {
                 _error.value = exception.message ?: "Erro ao carregar detalhes."
             } finally {

@@ -86,6 +86,9 @@ fun CharacterDetailScreen(
                     Text(text = "Status: ${character?.status}")
                     Text(text = "Espécie: ${character?.species}")
                 }
+                else -> {
+                    Text(text = "Nenhum dado disponível")
+                }
             }
         }
     }
