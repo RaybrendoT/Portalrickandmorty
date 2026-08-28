@@ -138,15 +138,49 @@ fun MyPortalScreen(
             Text("Atualizar Localização")
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
+
+        OutlinedButton(
+            onClick = {
+                val shareIntent = Intent(Intent.ACTION_SEND).apply {
+                    type = "text/plain"
+                    putExtra(
+                        Intent.EXTRA_TEXT,
+                        "Minhas coordenadas dimensionais: Lat ${location?.latitude}, Long ${location?.longitude}"
+                    )
+                }
+                context.startActivity(Intent.createChooser(shareIntent, "Compartilhar Portal"))
+            },
+            modifier = Modifier.fillMaxWidth(),
+            enabled = location != null
+        ) {
+            Text("Compartilhar Coordenadas")
+        }
+
         Spacer(modifier = Modifier.height(16.dp))
 
         Button(
             onClick = {
-                val intent = Intent(context, SyncForegroundService::class.java)
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                    context.startForegroundService(intent)
+                val hasNotificationPermission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    ContextCompat.checkSelfPermission(
+                        context,
+                        Manifest.permission.POST_NOTIFICATIONS
+                    ) == PackageManager.PERMISSION_GRANTED
                 } else {
-                    context.startService(intent)
+                    true
+                }
+
+                if (hasNotificationPermission) {
+                    val intent = Intent(context, SyncForegroundService::class.java)
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                        context.startForegroundService(intent)
+                    } else {
+                        context.startService(intent)
+                    }
+                } else {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                    }
                 }
             },
             modifier = Modifier.fillMaxWidth(),

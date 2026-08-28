@@ -12,6 +12,7 @@ import br.com.curso.portalrickandmorty.data.local.entity.CharacterEntity
 import br.com.curso.portalrickandmorty.data.local.entity.EpisodeEntity
 import br.com.curso.portalrickandmorty.data.local.entity.LocationEntity
 import br.com.curso.portalrickandmorty.data.local.entity.UserEntity
+import androidx.room.TypeConverters
 
 @Database(
     entities = [
@@ -20,9 +21,10 @@ import br.com.curso.portalrickandmorty.data.local.entity.UserEntity
         EpisodeEntity::class,
         UserEntity::class
     ],
-    version = 1,
+    version = 2, // Incremented version because of schema change
     exportSchema = false
 )
+@TypeConverters(Converters::class)
 abstract class AppDatabase : RoomDatabase() {
 
     abstract fun characterDao(): CharacterDao
@@ -40,7 +42,9 @@ abstract class AppDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppDatabase::class.java,
                     "rick_and_morty_db"
-                ).build()
+                )
+                    .fallbackToDestructiveMigration()
+                    .build()
                 INSTANCE = instance
                 instance
             }

@@ -17,5 +17,7 @@ data class CharacterDto(
     @SerializedName("species")
     val species: String,
     @SerializedName("image")
-    val image: String
+    val image: String,
+    @SerializedName("episode")
+    val episodes: List<String>
 )

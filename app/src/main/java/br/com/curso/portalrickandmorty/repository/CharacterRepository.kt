@@ -19,7 +19,8 @@ class CharacterRepository(private val dao: CharacterDao) {
                     name = entity.name,
                     status = entity.status,
                     species = entity.species,
-                    image = entity.image
+                    image = entity.image,
+                    episodes = entity.episodes
                 )
             }
         }
@@ -34,7 +35,8 @@ class CharacterRepository(private val dao: CharacterDao) {
                     name = dto.name,
                     status = dto.status,
                     species = dto.species,
-                    image = dto.image
+                    image = dto.image,
+                    episodes = dto.episodes
                 )
             }
             dao.insertCharacters(entities)
@@ -51,7 +53,8 @@ class CharacterRepository(private val dao: CharacterDao) {
                 name = local.name,
                 status = local.status,
                 species = local.species,
-                image = local.image
+                image = local.image,
+                episodes = local.episodes
             )
         }
 
@@ -62,7 +65,8 @@ class CharacterRepository(private val dao: CharacterDao) {
                 name = dto.name,
                 status = dto.status,
                 species = dto.species,
-                image = dto.image
+                image = dto.image,
+                episodes = dto.episodes
             )
         } catch (e: Exception) {
             null

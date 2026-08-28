@@ -1,7 +1,9 @@
 package br.com.curso.portalrickandmorty.screens.characters
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -21,8 +24,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import br.com.curso.portalrickandmorty.domain.model.Character
@@ -39,45 +44,64 @@ fun CharactersScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    when {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column {
+            if (error != null && characters.isNotEmpty()) {
+                OfflineWarningBanner()
+            }
 
-        isLoading -> {
-            LoadingState()
-        }
-
-        error != null -> {
-            ErrorState(error = error)
-        }
-
-        else -> {
-
-            LazyColumn(
-                modifier = Modifier.fillMaxSize()
-            ) {
-                item {
-                    Button(
-                        onClick = onPortalClick,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
-                    ) {
-                        Text("Ver Meu Portal (GPS)")
-                    }
+            when {
+                isLoading && characters.isEmpty() -> {
+                    LoadingState()
                 }
 
-                items(
-                    items = characters
-                ) { character ->
+                error != null && characters.isEmpty() -> {
+                    ErrorState(error = error)
+                }
 
-                    CharacterItem(
-                        character = character,
-                        onClick = { onCharacterClick(character.id) }
-                    )
-                    HorizontalDivider()
+                else -> {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        item {
+                            Button(
+                                onClick = onPortalClick,
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            ) {
+                                Text("Ver Meu Portal (GPS)")
+                            }
+                        }
+
+                        items(
+                            items = characters
+                        ) { character ->
+                            CharacterItem(
+                                character = character,
+                                onClick = { onCharacterClick(character.id) }
+                            )
+                            HorizontalDivider()
+                        }
+                    }
                 }
             }
         }
     }
+}
+
+@Composable
+fun OfflineWarningBanner() {
+    Text(
+        text = "Sem conexão - exibindo dados salvos",
+        modifier = Modifier
+            .fillMaxWidth()
+            .background(Color.Gray.copy(alpha = 0.8f))
+            .padding(8.dp),
+        color = Color.White,
+        fontSize = 12.sp,
+        textAlign = TextAlign.Center
+    )
 }
 
 @Composable

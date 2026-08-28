@@ -2,8 +2,11 @@ package br.com.curso.portalrickandmorty.screens.characters
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -85,6 +88,20 @@ fun CharacterDetailScreen(
                     )
                     Text(text = "Status: ${character?.status}")
                     Text(text = "Espécie: ${character?.species}")
+                    
+                    Spacer(modifier = Modifier.height(16.dp))
+                    
+                    Text(
+                        text = "Episódios:",
+                        fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    
+                    Text(
+                        text = "Este personagem aparece em ${character?.episodes?.size ?: 0} episódios.",
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
                 }
                 else -> {
                     Text(text = "Nenhum dado disponível")

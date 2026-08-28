@@ -1,6 +1,8 @@
 package br.com.curso.portalrickandmorty.screens.locations
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +17,9 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
@@ -27,41 +31,58 @@ fun LocationsScreen(
     val isLoading by viewModel.isLoading.collectAsState()
     val error by viewModel.error.collectAsState()
 
-    when {
-        isLoading -> {
-            Column(
-                modifier = Modifier.fillMaxSize(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                CircularProgressIndicator()
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column {
+            if (error != null && locations.isNotEmpty()) {
+                Text(
+                    text = "Sem conexão - exibindo dados salvos",
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .background(Color.Gray.copy(alpha = 0.8f))
+                        .padding(8.dp),
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    textAlign = TextAlign.Center
+                )
             }
-        }
-        error != null -> {
-            Column(
-                modifier = Modifier.fillMaxSize().padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(text = error ?: "Erro desconhecido")
-            }
-        }
-        else -> {
-            LazyColumn(modifier = Modifier.fillMaxSize()) {
-                items(locations) { location ->
+
+            when {
+                isLoading && locations.isEmpty() -> {
                     Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp)
+                        modifier = Modifier.fillMaxSize(),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
                     ) {
-                        Text(
-                            text = location.name,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold
-                        )
-                        Text(text = "${location.type} - ${location.dimension}")
+                        CircularProgressIndicator()
                     }
-                    HorizontalDivider()
+                }
+                error != null && locations.isEmpty() -> {
+                    Column(
+                        modifier = Modifier.fillMaxSize().padding(16.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Text(text = error ?: "Erro desconhecido")
+                    }
+                }
+                else -> {
+                    LazyColumn(modifier = Modifier.fillMaxSize()) {
+                        items(locations) { location ->
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(16.dp)
+                            ) {
+                                Text(
+                                    text = location.name,
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.Bold
+                                )
+                                Text(text = "${location.type} - ${location.dimension}")
+                            }
+                            HorizontalDivider()
+                        }
+                    }
                 }
             }
         }
